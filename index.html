@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>💼 نماذج الدورات</title>
+
+  <style>
+:root{
+  --menuW: 240px;
+
+  /* متغيراتك الأساسية */
+  --gold:#e0ca51;
+  --bg:#222;
+  --panel-bg: rgba(0,0,0,0.85);
+
+  /* ✅ مسافة بين القائمة والمحتوى */
+  --gap: 28px;
+}
+
+html,body{height:100%}
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:Tahoma, Arial, sans-serif;
+  color:var(--gold);
+  text-align:center;
+
+  background-color:#111;
+  background-image: url("https://raw.githubusercontent.com/xhhp1/mechanics/main/images/mechan.png");
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* ✅ لف كل المحتوى (غير المينو) */
+.main{
+  margin-right: calc(var(--menuW) + var(--gap));
+  margin-left: var(--gap);
+  padding: 20px;
+}
+
+/* ✅ القائمة يمين دائماً + عمودية دائماً */
+.menu{
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  left: auto;
+  width: var(--menuW);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10000;
+  margin: 0;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.menu::-webkit-scrollbar{ width: 8px; }
+.menu::-webkit-scrollbar-thumb{
+  background: rgba(224,202,81,0.35);
+  border-radius: 10px;
+}
+
+.menu button{
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  background: var(--gold);
+  color: #111;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .12s ease, background .12s ease;
+  text-align: right;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+.menu button:hover{
+  background:#c6b142;
+  transform: translateX(-3px);
+}
+
+/* ✅ زر رئيسي لمجموعة (يفتح/يقفل) */
+.group-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.group-toggle .arrow{
+  font-weight:900;
+  transition: transform .18s ease;
+}
+.group-toggle.open .arrow{
+  transform: rotate(180deg);
+}
+
+/* ✅ قائمة فرعية */
+.submenu{
+  display:none;
+  flex-direction:column;
+  gap:8px;
+  padding-right: 10px; /* مسافة داخلية */
+}
+.submenu.open{ display:flex; }
+
+/* ✅ أزرار فرعية أصغر شوي */
+.submenu button{
+  background: rgba(224,202,81,0.88);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.28);
+  font-size: 15px;
+  padding: 11px 14px;
+}
+.submenu button:hover{
+  background:#c6b142;
+}
+
+@media (max-width: 900px), (orientation: portrait){
+  :root{ --gap: 14px; }
+
+  .main{
+    margin-right: calc(var(--menuW) + var(--gap));
+    margin-left: var(--gap);
+    padding: 16px;
+  }
+
+  .menu{
+    top: 10px;
+    right: 10px;
+    width: var(--menuW);
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 0;
+    border-radius: 0;
+  }
+  .menu button{
+    min-width: 0;
+    text-align: right;
+    transform: none;
+  }
+}
+
+/* ✅ اخفاء كل التابات افتراضياً */
+.container{
+  display:none;
+  max-width:980px;
+  width: min(980px, 100%);
+  margin: 20px auto;
+  background: var(--panel-bg);
+  border-radius:12px;
+  padding:18px;
+  text-align:right;
+}
+.container.active{ display:block; }
+.container h2{ margin-top:0; color:var(--gold); }
+
+label{ display:block; margin:10px 0 6px; font-weight:bold; text-align:right; }
+
+input[type="text"], input[type="number"], input[type="date"], select, textarea{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid var(--gold);
+  background:var(--bg);
+  color:var(--gold);
+  font-size:15px;
+}
+
+.button-row{ display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+.btn{ padding:12px 22px; background:var(--gold); color:#111; border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
+.btn:hover{ background:#c6b142; }
+
+.output{
+  display:none;
+  margin-top:14px;
+  background:#333;
+  padding:14px;
+  border-radius:8px;
+  color:var(--gold);
+  text-align:left;
+  white-space:pre-wrap;
+  direction:ltr;
+  max-width:940px;
+  margin-left:auto;
+  margin-right:auto;
+}
+  </style>
+
+<style>
+:root{
+  --menuW:240px;
+  --gold:#e0ca51;
+  --bg:#222;
+  --panel-bg:rgba(0,0,0,0.85);
+  --gap:28px;
+}
+
+html,body{height:100%}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Tahoma,Arial,sans-serif;
+  color:var(--gold);
+  background:#111 url("https://raw.githubusercontent.com/xhhp1/mechanics/main/images/mechan.png") no-repeat center center fixed;
+  background-size:cover;
+}
+
+/* layout */
+.main{
+  margin-right:calc(var(--menuW) + var(--gap));
+  margin-left:var(--gap);
+  padding:20px;
+}
+
+.menu{
+  position:fixed;
+  top:16px;
+  right:16px;
+  width:var(--menuW);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:9999;
+}
+
+.menu button{
+  padding:12px;
+  background:var(--gold);
+  color:#111;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+.container{
+  max-width:980px;
+  margin:auto;
+  background:var(--panel-bg);
+  padding:18px;
+  border-radius:12px;
+  text-align:right;
+}
+
+label{
+  display:block;
+  margin:10px 0 6px;
+  font-weight:bold;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid var(--gold);
+  background:var(--bg);
+  color:var(--gold);
+}
+
+textarea{resize:vertical}
+
+.btns{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin-top:14px;
+}
+
+.btn{
+  padding:12px 22px;
+  background:var(--gold);
+  color:#111;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.output{
+  margin-top:14px;
+  background:#333;
+  padding:14px;
+  border-radius:8px;
+  white-space:pre-wrap;
+  direction:ltr;
+}
+</style>
+</head>
+
+<body>
+
+  <!-- ✅ القائمة: زر واحد يفتح كل الخيارات -->
+  <div class="menu">
+
+    <!-- زر رئيسي -->
+    <button type="button" id="coursesGroupBtn" class="group-toggle">
+      <span>مدربين الورش</span>
+      <span class="arrow">▾</span>
+    </button>
+
+    <!-- قائمة فرعية: كل التابات -->
+<div id="coursesSubmenu" class="submenu">
+      <button type="button" data-target="tabCourseType"> نماذج نهاية الدورة</button>
+      <button type="button" data-target="tabCourses">الدورات</button>
+      <button type="button" data-target="tabRoleRequest">طلب رول الدورات</button>
+      <button type="button" data-target="tabGrades">📋 رصد الدرجات</button>
+    </div>
+
+  </div>
+
+  <div class="main">
+
+    <!-- ===================== tab نوع الدورة ===================== -->
+    <section id="tabCourseType" class="container active">
+      <h2>نماذج نهاية الدورة</h2>
+
+      <label>اختر النوع</label>
+      <select id="courseType">
+        <option value="basic" selected>الأساسية</option>
+        <option value="special">الاستثنائية</option>
+      </select>
+
+      <!-- ===================== نموذج الأساسية ===================== -->
+      <div id="basicWrap" style="margin-top:14px;">
+        <h2>📌 نموذج الدورة الأساسية</h2>
+
+        <label> اختر اسم الدورة</label>
+        <select id="b_courseName">
+          <option value="العمليات">العمليات</option>
+          <option value="خدمات الطرق">خدمات الطرق</option>
+          <option value="ورشة التصنيع">ورشة التصنيع</option>
+          <option value="ورشة التزويد">ورشة التزويد</option>
+          <option value="الدليل الشامل">الدليل الشامل</option>
+        </select>
+
+        <label> رقم التسلسل </label>
+        <input id="b_serial" type="text" inputmode="numeric" placeholder="00" />
+
+        <label> رقم الدورة </label>
+        <input id="b_courseNo" type="text" inputmode="numeric" placeholder="مثال: 12" />
+
+        <label> شرح الدورة من قبل </label>
+        <input id="b_explainer" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
+
+        <label> مصحح الاختبار </label>
+        <input id="b_checker" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
+
+        <label> المدربين المتفاعلين </label>
+        <input id="b_active" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
+
+        <label> باقي المدربين </label>
+        <input id="b_others" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
+
+        <label> طلب الرول </label>
+        <select id="b_roleName">
+          <option value="العمليات">العمليات</option>
+          <option value="خدمات الطرق">خدمات الطرق</option>
+          <option value="ورشة التصنيع">ورشة التصنيع</option>
+          <option value="ورشة التزويد">ورشة التزويد</option>
+          <option value="الدليل الشامل">الدليل الشامل</option>
+        </select>
+
+        <label> رابط النتائج</label>
+        <input id="b_resultsLink" type="text" placeholder="مثال: https://..." />
+
+        <div class="button-row">
+          <button class="btn" type="button" onclick="genBasic()">إنشاء التقرير</button>
+          <button class="btn" type="button" onclick="copyText('outBox', this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <!-- ===================== نموذج الاستثنائية ===================== -->
+      <div id="specialWrap" style="margin-top:14px; display:none;">
+        <h2> نموذج الدورة الاستثنائية</h2>
+
+        <label> اختر اسم الدورة</label>
+        <select id="s_courseName">
+          <option value="العمليات">العمليات</option>
+          <option value="خدمات الطرق" selected>خدمات الطرق</option>
+          <option value="ورشة التصنيع">ورشة التصنيع</option>
+          <option value="ورشة التزويد">ورشة التزويد</option>
+          <option value="الدليل الشامل">الدليل الشامل</option>
+        </select>
+
+        <label> رقم التسلسل </label>
+        <input id="s_serial" type="text" inputmode="numeric" placeholder="5" />
+
+        <label> منشن الفني </label>
+        <input id="s_tech" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
+
+        <label> شرح من قبل </label>
+        <input id="s_trainer" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
+
+        <label> الدرجة</label>
+        <input id="s_score" type="text" inputmode="numeric" placeholder="مثال: 08" />
+
+        <label> اسم الرول </label>
+        <select id="s_roleName">
+          <option value="العمليات">العمليات</option>
+          <option value="خدمات الطرق">خدمات الطرق</option>
+          <option value="ورشة التصنيع">ورشة التصنيع</option>
+          <option value="ورشة التزويد">ورشة التزويد</option>
+          <option value="الدليل الشامل">الدليل الشامل</option>
+        </select>
+
+        <div class="button-row">
+          <button class="btn" type="button" onclick="genSpecial()">إنشاء التقرير</button>
+          <button class="btn" type="button" onclick="copyText('outBox', this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <pre id="outBox" class="output"></pre>
+    </section>
+
+    <!-- ===================== tab الدورات ===================== -->
+    <section id="tabCourses" class="container">
+      <h2>الدورات</h2>
+
+      <label>اختر الدورة</label>
+      <select id="courseLinksSelect">
+        <option value="" selected>— اختر —</option>
+
+        <option value="https://www.canva.com/design/DAGs6ZpXJZ4/8EczNf7jWa4grGNC1_JREQ/view?utm_content=DAGs6ZpXJZ4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h5735c4c796">دورة العمليات</option>
+        <option value="https://www.canva.com/design/DAGutzHb2cc/ZLwcKlEfX4nu087DKCm6Rg/view?utm_content=DAGutzHb2cc&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6a4a5844b1">دورة خدمات الطرق</option>
+        <option value="https://www.canva.com/design/DAGsZ5eHaC0/RbIkYJ-3c14h-uQPWNa7qw/view?utm_content=DAGsZ5eHaC0&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h9e8636e307">دورة التصنيع</option>
+        <option value="https://www.canva.com/design/DAGs6S2N9oQ/yOKZcDlmq_uPsFzL-ZvZwg/view?utm_content=DAGs6S2N9oQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h1ec6238ffe">دورة التعديل والتزويد</option>
+        <option value="https://www.canva.com/design/DAGvSVLyjNc/FF6lXkGowebTEMz84JUhWQ/view?utm_content=DAGvSVLyjNc&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h8155ab23d2">دورة البحث والانقاذ</option>
+        <option value="https://www.canva.com/design/DAGtKZe7JW8/hgWzX9YAkCUTxIm3-m0mMw/view?utm_content=DAGtKZe7JW8&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=haaf73ee355">دورة الدليل الشامل</option>
+      </select>
+
+      <div class="button-row">
+        <button id="goCourseBtn" class="btn" type="button" style="display:none;">🔗 فتح الدورة</button>
+      </div>
+    </section>
+
+    <!-- ===================== tab طلب رول الدورات ===================== -->
+    <section id="tabRoleRequest" class="container">
+      <h2>طلب رول الدورات</h2>
+
+      <label>منشن للفني</label>
+      <input id="rr_tech" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
+
+      <label>نوع الطلب</label>
+      <select id="rr_role">
+        <option value="ورشة التزويد">ورشة التزويد</option>
+        <option value="ورشة التصنيع">ورشة التصنيع</option>
+        <option value="خدمات الطرق">خدمات الطرق</option>
+        <option value="العمليات">العمليات</option>
+      </select>
+
+      <label>رابط الدورة</label>
+      <input id="rr_link" type="text" placeholder="مثال: https://..." />
+
+      <div class="button-row">
+        <button class="btn" type="button" onclick="genRoleRequest()">إنشاء التقرير</button>
+        <button class="btn" type="button" onclick="copyText('rr_outBox', this)">📋 نسخ</button>
+      </div>
+
+      <pre id="rr_outBox" class="output"></pre>
+    </section>
+
+    <section id="tabGrades" class="container">
+      <h2>📋 رصد درجات الناجحين</h2>
+
+      <label>اسم الدورة</label>
+      <select id="courseName">
+        <option value="">— اختر —</option>
+        <option>الدليل الشامل</option>
+        <option>ورشة التزويد</option>
+        <option>ورشة التصنيع</option>
+        <option>خدمات الطرق</option>
+        <option>العمليات</option>
+      </select>
+
+      <label>رقم الدورة</label>
+      <input id="courseNum" placeholder="00">
+
+      <label>10 درجات</label>
+      <textarea id="g10"></textarea>
+
+      <label>9 درجات</label>
+      <textarea id="g9"></textarea>
+
+      <label>8 درجات</label>
+      <textarea id="g8"></textarea>
+
+      <label>7 درجات</label>
+      <textarea id="g7"></textarea>
+
+      <hr>
+
+      <label>شارح الدورة</label>
+      <input id="trainer">
+
+      <label>مسؤول الدورة</label>
+      <input id="manager">
+
+      <label>نائب مسؤول الدورة</label>
+      <input id="deputy">
+
+      <div class="btns">
+        <button class="btn" onclick="build()">إنشاء</button>
+        <button class="btn" onclick="copyOut()">نسخ</button>
+        <button class="btn" onclick="clearAll()">مسح</button>
+      </div>
+
+      <div class="output" id="out"></div>
+    </section>
+
+<script>
+  // =========================
+  // Group toggle (فتح/إغلاق)
+  // =========================
+  const coursesGroupBtn = document.getElementById("coursesGroupBtn");
+  const coursesSubmenu = document.getElementById("coursesSubmenu");
+
+  // افتراضي: مقفول
+coursesGroupBtn.classList.remove("open");
+coursesSubmenu.classList.remove("open");
+
+  coursesGroupBtn.addEventListener("click", ()=>{
+    const isOpen = coursesSubmenu.classList.contains("open");
+    if(isOpen){
+      coursesSubmenu.classList.remove("open");
+      coursesGroupBtn.classList.remove("open");
+    }else{
+      coursesSubmenu.classList.add("open");
+      coursesGroupBtn.classList.add("open");
+    }
+  });
+
+  // =========================
+  // Tabs (تشتغل على أزرار submenu فقط)
+  // =========================
+  document.querySelectorAll("[data-target]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const target = btn.getAttribute("data-target");
+      document.querySelectorAll(".container").forEach(c=>c.classList.remove("active"));
+      document.getElementById(target).classList.add("active");
+    });
+  });
+
+  // =========================
+  // Switch Basic/Special
+  // =========================
+  const courseType = document.getElementById("courseType");
+  const basicWrap = document.getElementById("basicWrap");
+  const specialWrap = document.getElementById("specialWrap");
+
+  courseType.addEventListener("change", ()=>{
+    const v = courseType.value;
+    if(v === "basic"){
+      basicWrap.style.display = "block";
+      specialWrap.style.display = "none";
+    }else{
+      basicWrap.style.display = "none";
+      specialWrap.style.display = "block";
+    }
+    const out = document.getElementById("outBox");
+    out.style.display = "none";
+    out.textContent = "";
+  });
+
+  // =========================
+  // Helpers
+  // =========================
+  function onlyDigits(el){
+    el.value = (el.value || "").replace(/\D+/g, "");
+  }
+
+  function allowDigitsAndSpaces(el){
+    el.value = (el.value || "").replace(/[^\d\s]+/g, "");
+  }
+
+  function parseIdsFromSpaces(raw, max=4){
+    const cleaned = (raw || "").replace(/[^\d\s]+/g, " ");
+    const parts = cleaned.split(/\s+/).filter(Boolean);
+    return parts.slice(0, max);
+  }
+
+  function listMentions(ids){
+    return ids.map(x=>`<@${x}>`).join(" ");
+  }
+
+  function showOutput(text){
+    const out = document.getElementById("outBox");
+    out.style.display = "block";
+    out.textContent = text;
+    out.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  function copyText(outId, btn){
+    const el = document.getElementById(outId);
+    const text = el.textContent || "";
+    if(!text.trim()){
+      const old = btn.textContent;
+      btn.textContent = "لا يوجد نص";
+      setTimeout(()=>btn.textContent=old, 900);
+      return;
+    }
+    navigator.clipboard.writeText(text).then(()=>{
+      const old = btn.textContent;
+      btn.textContent = "✅ تم النسخ";
+      setTimeout(()=>btn.textContent=old, 1100);
+    }).catch(()=>{
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      const old = btn.textContent;
+      btn.textContent = "✅ تم النسخ";
+      setTimeout(()=>btn.textContent=old, 1100);
+    });
+  }
+
+  // =========================
+  // Input restrictions
+  // =========================
+  ["b_serial","b_courseNo","b_explainer","b_checker","s_serial","s_tech","s_trainer","s_score"].forEach(id=>{
+    const el = document.getElementById(id);
+    el.addEventListener("input", ()=>onlyDigits(el));
+  });
+
+  ["b_active","b_others"].forEach(id=>{
+    const el = document.getElementById(id);
+    el.removeAttribute("inputmode");
+    el.addEventListener("input", ()=>allowDigitsAndSpaces(el));
+    el.addEventListener("paste", ()=>{
+      setTimeout(()=>allowDigitsAndSpaces(el), 0);
+    });
+  });
+
+  // =========================
+  // Generator: Basic
+  // =========================
+  function genBasic(){
+    const courseName = document.getElementById("b_courseName").value || "اسم الدورة هنا";
+    const serial = (document.getElementById("b_serial").value || "00").replace(/\D+/g,"") || "00";
+    const courseNo = (document.getElementById("b_courseNo").value || "").replace(/\D+/g,"");
+    const explainerId = (document.getElementById("b_explainer").value || "").replace(/\D+/g,"");
+    const checkerId = (document.getElementById("b_checker").value || "").replace(/\D+/g,"");
+
+    const activeIds = parseIdsFromSpaces(document.getElementById("b_active").value, 4);
+    const otherIds  = parseIdsFromSpaces(document.getElementById("b_others").value, 4);
+
+    const roleName = document.getElementById("b_roleName").value || "اسم الرول";
+    const resultsLink = document.getElementById("b_resultsLink").value || "رابط النتائج";
+
+    const courseNoText = courseNo ? courseNo : "تضع رقم الدورة";
+    const explainerText = explainerId ? `<@${explainerId}>` : `<@منشن الشارح>`;
+    const checkerText = checkerId ? `<@${checkerId}>` : `<@منشن المصحح>`;
+
+    const activeText = activeIds.length
+      ? `( ${listMentions(activeIds)} )`
+      : `( <@منشن1> <@منشن2>  <@منشن3>  <@منشن4>  )`;
+
+    const otherText = otherIds.length
+      ? `( ${listMentions(otherIds)} )`
+      : `(<@منشن1> <@منشن2>  <@منشن3>  <@منشن4> )`;
+
+    const out =
+`*** نموذج الأنتهاء من الدورة واعتماد النتائج وطلب تسليم رول ***
+
+\`- تم تعبية جداول رسوم الدورات في مجلد الخاص في دورة (${courseName}) رقم التسلسل (${serial}) قبل ارسال هاذا التقرير :\`
+
+*** \` نوع الدورة : \`( أساسية )***
+
+*** \` اسم الدورة :\` ( ${courseName} )***
+
+***  ( ${courseNoText} ) \` رقم الدورة :\`***
+
+***  \`تم شرح الدورة من قبل  :\` *** ( ${explainerText} )
+
+***  \`تم تصحيح الاختبار من قبل  :\` *** ( ${checkerText} ) 
+
+*** \`المدربين المتفاعلين : \` *** ${activeText} 
+
+*** \` باقي المدربين :\` *** ${otherText} 
+
+*** \`نوع الطلب : \`***
+
+*** اعطاء رول [ ${roleName}](${resultsLink})***
+
+*** \` توقيع واعتماد :\` <@1199529688989696051>  ***
+
+*** \` الاحاطة :\` <@1329539822028849152> - <@257536888980635649>- <@1125187429498892419> -<@950368783082606632>  -<@868066884677947424>    ***
+
+*** \` للعلم :\`  <@&1071933343123386429>   ***
+
+\`\`\`diff
+- ملاحظه يتم ارفاق صوره الإداع المبلغ في الخزنه
+\`\`\``;
+
+    showOutput(out);
+  }
+
+  // =========================
+  // Generator: Special
+  // =========================
+  function genSpecial(){
+    const courseName = document.getElementById("s_courseName").value || "خدمات الطرق";
+    const serial = (document.getElementById("s_serial").value || "5").replace(/\D+/g,"") || "5";
+    const techId = (document.getElementById("s_tech").value || "").replace(/\D+/g,"");
+    const trainerId = (document.getElementById("s_trainer").value || "").replace(/\D+/g,"");
+    const score = (document.getElementById("s_score").value || "00").replace(/\D+/g,"") || "00";
+    const roleName = document.getElementById("s_roleName").value || "اسم الرول";
+
+    const techText = techId ? `<@${techId}>` : `<@منشن>`;
+    const trainerText = trainerId ? `<@${trainerId}>` : `<@مدرب>`;
+    const scoreText = `${score}|10`;
+
+    const out =
+`*** نموذج الأنتهاء من الدورة الاستثنائية ***
+
+
+\`- تم تعبية جداول رسوم الدورات في مجلد الدورة الاستثنائية في دورة (${courseName}) رقم التسلسل ( ${serial} ) قبل ارسال هاذا التقرير :\`
+
+
+*** \` اسم الدورة :\` ( تضع اسم الدورة )***
+
+*** \` تم إقامه الدورة للفني : \` *** ( ${techText} ) 
+
+*** \`تم شرح الدورة من قبل  :\` ***  ( ${trainerText} ) 
+ 
+*** \`درجه الاختبار  :\`  ( ${scoreText} ) ***
+
+*** \`نوع الطلب  : \`***   *** اعطاء رول ( ${roleName} )***      
+ 
+*** \` توقيع واعتماد :\`  <@1199529688989696051>    ***`;
+
+    showOutput(out);
+  }
+
+  // =========================
+  // Tab الدورات: redirect
+  // =========================
+  const courseLinksSelect = document.getElementById("courseLinksSelect");
+  const goCourseBtn = document.getElementById("goCourseBtn");
+
+  courseLinksSelect.addEventListener("change", ()=>{
+    const url = courseLinksSelect.value;
+    if(url){
+      goCourseBtn.style.display = "inline-block";
+      goCourseBtn.onclick = ()=>{
+        window.open(url, "_blank", "noopener,noreferrer");
+      };
+    }else{
+      goCourseBtn.style.display = "none";
+      goCourseBtn.onclick = null;
+    }
+  });
+
+  // =========================
+  // Tab طلب رول الدورات
+  // =========================
+  const rrTech = document.getElementById("rr_tech");
+  rrTech.addEventListener("input", ()=>onlyDigits(rrTech));
+
+  function genRoleRequest(){
+    const techId = (document.getElementById("rr_tech").value || "").replace(/\D+/g,"");
+    const role = document.getElementById("rr_role").value || "ورشة التزويد";
+    const link = (document.getElementById("rr_link").value || "").trim();
+
+    const techText = techId ? `<@${techId}>` : `<@منشن>`;
+    const linkText = link ? link : "رابط الدورة";
+
+    const out =
+`***السلام عليكم ورحمة الله وبركاته ,,***
+
+***\`القيادة الموقرة نطلب منكم للفني : \` ( ${techText} ) ***
+
+***نوع الطلب : ( اعطاء  رول  ${role} ) ***
+
+***\`وذلك بسبب :\` (  [دورة استثنائية](${linkText}) ) ***
+
+*** للعلم مع التحية /***
+<@&1071933343123386429> 
+<@&1092120226478428200> 
+<@&1092120390324731994>`;
+
+    const box = document.getElementById("rr_outBox");
+    box.style.display = "block";
+    box.textContent = out;
+    box.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  // default
+  courseType.value = "basic";
+  courseType.dispatchEvent(new Event("change"));
+
+  // expose
+  window.genBasic = genBasic;
+  window.genSpecial = genSpecial;
+  window.genRoleRequest = genRoleRequest;
+  window.copyText = copyText;
+</script>
+
+<script>
+function toMention(token){
+  token = token.trim();
+  if(!token) return "";
+  if(/^<@!?&?\d+>$/.test(token)) return token;
+  if(/^\d+$/.test(token)) return "<@" + token + ">";
+  return token;
+}
+
+function parseMentions(text){
+  return text.replace(/\n/g," ")
+             .split(/\s+/)
+             .map(toMention)
+             .filter(x=>x);
+}
+
+function section(title,arr){
+  if(arr.length===0) return "";
+  return "\n***"+title+"***\n\n"+arr.join("\n")+"\n";
+}
+
+function build(){
+  const name=document.getElementById("courseName").value||"الاسم هنا";
+  const num=document.getElementById("courseNum").value||"00";
+
+  const g10=parseMentions(document.getElementById("g10").value);
+  const g9 =parseMentions(document.getElementById("g9").value);
+  const g8 =parseMentions(document.getElementById("g8").value);
+  const g7 =parseMentions(document.getElementById("g7").value);
+
+  const trainer=toMention(document.getElementById("trainer").value||"<@فلان>");
+  const manager=toMention(document.getElementById("manager").value||"<@المسؤول>");
+  const deputy =toMention(document.getElementById("deputy").value||"<@نائب>");
+
+  let out="";
+  out+="***﷽***\n\n";
+  out+="***اما بعد ..***\n\n";
+  out+="***رصد درجات الناجحين  في  دورة***\n";
+  out+="***```  اسم الدورة ( "+name+" ) ("+num+")```***\n";
+
+  out+=section("10 / 10",g10);
+  out+=section("10 / 09",g9);
+  out+=section("10 / 08",g8);
+  out+=section("10 / 07",g7);
+
+  out+="---------------------------------------------------------------------------------------\n\n";
+  out+="***شرح :  "+trainer+"  ***\n\n";
+  out+="*** مسؤول الدورة  :"+manager+"  ***\n\n";
+  out+="*** نائب مسؤول الدورة  : "+deputy+"  ***\n\n";
+  out+="***التوقيع وعتماد :  <@1199529688989696051>   ***\n\n";
+  out+="***نسخة الى/ <@&1071933354976493650> ***\n";
+  out+="***للمتابعة والتنفيذ :  <@&1149742928953086105> ***\n";
+  out+="***للعلم و الاحاطة :  <@&1071933352497664010>   ***\n";
+
+  document.getElementById("out").textContent=out;
+}
+
+function copyOut(){
+  if(!document.getElementById("out").textContent) build();
+  navigator.clipboard.writeText(document.getElementById("out").textContent);
+}
+
+function clearAll(){
+  ["courseName","courseNum","g10","g9","g8","g7","trainer","manager","deputy"]
+  .forEach(id=>document.getElementById(id).value="");
+  document.getElementById("out").textContent="";
+}
+</script>
+
+</body>
+</html>
