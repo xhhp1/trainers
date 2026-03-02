@@ -307,7 +307,7 @@ textarea{resize:vertical}
     </button>
 
     <!-- قائمة فرعية: كل التابات -->
-<div id="coursesSubmenu" class="submenu">
+    <div id="coursesSubmenu" class="submenu">
       <button type="button" data-target="tabCourseType"> نماذج نهاية الدورة</button>
       <button type="button" data-target="tabCourses">الدورات</button>
       <button type="button" data-target="tabRoleRequest">طلب رول الدورات</button>
@@ -448,13 +448,8 @@ textarea{resize:vertical}
       <label>منشن للفني</label>
       <input id="rr_tech" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
 
-      <label>نوع الطلب</label>
-      <select id="rr_role">
-        <option value="ورشة التزويد">ورشة التزويد</option>
-        <option value="ورشة التصنيع">ورشة التصنيع</option>
-        <option value="خدمات الطرق">خدمات الطرق</option>
-        <option value="العمليات">العمليات</option>
-      </select>
+      <label>اسم الدورة (تلقائي)</label>
+      <input id="rr_roleAuto" type="text" readonly value="—" />
 
       <label>رابط الدورة</label>
       <input id="rr_link" type="text" placeholder="مثال: https://..." />
@@ -523,8 +518,8 @@ textarea{resize:vertical}
   const coursesSubmenu = document.getElementById("coursesSubmenu");
 
   // افتراضي: مقفول
-coursesGroupBtn.classList.remove("open");
-coursesSubmenu.classList.remove("open");
+  coursesGroupBtn.classList.remove("open");
+  coursesSubmenu.classList.remove("open");
 
   coursesGroupBtn.addEventListener("click", ()=>{
     const isOpen = coursesSubmenu.classList.contains("open");
@@ -567,7 +562,32 @@ coursesSubmenu.classList.remove("open");
     const out = document.getElementById("outBox");
     out.style.display = "none";
     out.textContent = "";
+
+    // مهم: تحديث اسم الدورة في طلب الرول
+    syncRoleRequestCourse();
   });
+
+  // =========================
+  // Sync "طلب رول الدورات" مع "اختر اسم الدورة" تلقائياً
+  // =========================
+  function getSelectedCourseName(){
+    const t = document.getElementById("courseType")?.value || "basic";
+    if(t === "basic"){
+      return document.getElementById("b_courseName")?.value || "";
+    }else{
+      return document.getElementById("s_courseName")?.value || "";
+    }
+  }
+
+  function syncRoleRequestCourse(){
+    const rrRoleAuto = document.getElementById("rr_roleAuto");
+    if(!rrRoleAuto) return;
+    const name = getSelectedCourseName();
+    rrRoleAuto.value = name || "لا يوجد";
+  }
+
+  document.getElementById("b_courseName").addEventListener("change", syncRoleRequestCourse);
+  document.getElementById("s_courseName").addEventListener("change", syncRoleRequestCourse);
 
   // =========================
   // Helpers
@@ -654,19 +674,21 @@ coursesSubmenu.classList.remove("open");
     const otherIds  = parseIdsFromSpaces(document.getElementById("b_others").value, 4);
 
     const roleName = document.getElementById("b_roleName").value || "اسم الرول";
-    const resultsLink = document.getElementById("b_resultsLink").value || "رابط النتائج";
 
-    const courseNoText = courseNo ? courseNo : "تضع رقم الدورة";
-    const explainerText = explainerId ? `<@${explainerId}>` : `<@منشن الشارح>`;
-    const checkerText = checkerId ? `<@${checkerId}>` : `<@منشن المصحح>`;
+    const resultsLinkRaw = (document.getElementById("b_resultsLink").value || "").trim();
+    const resultsLink = resultsLinkRaw ? resultsLinkRaw : "لا يوجد";
+
+    const courseNoText = courseNo ? courseNo : "لا يوجد";
+    const explainerText = explainerId ? `<@${explainerId}>` : "لا يوجد";
+    const checkerText = checkerId ? `<@${checkerId}>` : "لا يوجد";
 
     const activeText = activeIds.length
       ? `( ${listMentions(activeIds)} )`
-      : `( <@منشن1> <@منشن2>  <@منشن3>  <@منشن4>  )`;
+      : `( لا يوجد )`;
 
     const otherText = otherIds.length
       ? `( ${listMentions(otherIds)} )`
-      : `(<@منشن1> <@منشن2>  <@منشن3>  <@منشن4> )`;
+      : `( لا يوجد )`;
 
     const out =
 `*** نموذج الأنتهاء من الدورة واعتماد النتائج وطلب تسليم رول ***
@@ -693,7 +715,7 @@ coursesSubmenu.classList.remove("open");
 
 *** \` توقيع واعتماد :\` <@1199529688989696051>  ***
 
-*** \` الاحاطة :\` <@1347310064977055834> - <@1301978810379534346>- <@868066884677947424> -<@758726902554558518> -<@442754544443588621> -<@1125187429498892419>    ***
+*** \` الاحاطة :\` <@1131176314498449510> - <@1347310064977055834> - <@1301978810379534346>- <@868066884677947424> -<@758726902554558518> -<@442754544443588621> -<@1125187429498892419>    ***
 
 *** \` للعلم :\`  <@&1071933343123386429>   ***
 
@@ -768,18 +790,18 @@ coursesSubmenu.classList.remove("open");
 
   function genRoleRequest(){
     const techId = (document.getElementById("rr_tech").value || "").replace(/\D+/g,"");
-    const role = document.getElementById("rr_role").value || "ورشة التزويد";
+    const role = getSelectedCourseName() || "لا يوجد";
     const link = (document.getElementById("rr_link").value || "").trim();
 
-    const techText = techId ? `<@${techId}>` : `<@منشن>`;
-    const linkText = link ? link : "رابط الدورة";
+    const techText = techId ? `<@${techId}>` : "لا يوجد";
+    const linkText = link ? link : "لا يوجد";
 
     const out =
 `***السلام عليكم ورحمة الله وبركاته ,,***
 
 ***\`القيادة الموقرة نطلب منكم للفني : \` ( ${techText} ) ***
 
-***نوع الطلب : ( اعطاء  رول  ${role} ) ***
+***نوع الطلب : ( اعطاء رول ${role} ) ***
 
 ***\`وذلك بسبب :\` (  [دورة استثنائية](${linkText}) ) ***
 
@@ -797,6 +819,7 @@ coursesSubmenu.classList.remove("open");
   // default
   courseType.value = "basic";
   courseType.dispatchEvent(new Event("change"));
+  syncRoleRequestCourse();
 
   // expose
   window.genBasic = genBasic;
