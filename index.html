@@ -194,7 +194,7 @@ input[type="text"], input[type="number"], input[type="date"], select, textarea{
 }
   </style>
 
-<style>
+  <style>
 :root{
   --menuW:240px;
   --gold:#e0ca51;
@@ -214,7 +214,6 @@ body{
   background-size:cover;
 }
 
-/* layout */
 .main{
   margin-right:calc(var(--menuW) + var(--gap));
   margin-left:var(--gap);
@@ -292,28 +291,23 @@ textarea{resize:vertical}
   white-space:pre-wrap;
   direction:ltr;
 }
-</style>
+  </style>
 </head>
 
 <body>
 
-  <!-- ✅ القائمة: زر واحد يفتح كل الخيارات -->
   <div class="menu">
-
-    <!-- زر رئيسي -->
     <button type="button" id="coursesGroupBtn" class="group-toggle">
       <span>مدربين الورش</span>
       <span class="arrow">▾</span>
     </button>
 
-    <!-- قائمة فرعية: كل التابات -->
     <div id="coursesSubmenu" class="submenu">
       <button type="button" data-target="tabCourseType"> نماذج نهاية الدورة</button>
       <button type="button" data-target="tabCourses">الدورات</button>
       <button type="button" data-target="tabRoleRequest">طلب رول الدورات</button>
       <button type="button" data-target="tabGrades">📋 رصد الدرجات</button>
     </div>
-
   </div>
 
   <div class="main">
@@ -323,7 +317,7 @@ textarea{resize:vertical}
       <h2>نماذج نهاية الدورة</h2>
 
       <label>اختر النوع</label>
-      <select id="courseType">
+      <select id="courseType" autocomplete="off">
         <option value="basic" selected>الأساسية</option>
         <option value="special">الاستثنائية</option>
       </select>
@@ -333,8 +327,8 @@ textarea{resize:vertical}
         <h2>📌 نموذج الدورة الأساسية</h2>
 
         <label> اختر اسم الدورة</label>
-        <select id="b_courseName">
-          <option value="العمليات">العمليات</option>
+        <select id="b_courseName" autocomplete="off">
+          <option value="العمليات" selected>العمليات</option>
           <option value="خدمات الطرق">خدمات الطرق</option>
           <option value="ورشة التصنيع">ورشة التصنيع</option>
           <option value="ورشة التزويد">ورشة التزويد</option>
@@ -359,15 +353,6 @@ textarea{resize:vertical}
         <label> باقي المدربين </label>
         <input id="b_others" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
 
-        <label> طلب الرول </label>
-        <select id="b_roleName">
-          <option value="العمليات">العمليات</option>
-          <option value="خدمات الطرق">خدمات الطرق</option>
-          <option value="ورشة التصنيع">ورشة التصنيع</option>
-          <option value="ورشة التزويد">ورشة التزويد</option>
-          <option value="الدليل الشامل">الدليل الشامل</option>
-        </select>
-
         <label> رابط النتائج</label>
         <input id="b_resultsLink" type="text" placeholder="مثال: https://..." />
 
@@ -382,7 +367,7 @@ textarea{resize:vertical}
         <h2> نموذج الدورة الاستثنائية</h2>
 
         <label> اختر اسم الدورة</label>
-        <select id="s_courseName">
+        <select id="s_courseName" autocomplete="off">
           <option value="العمليات">العمليات</option>
           <option value="خدمات الطرق" selected>خدمات الطرق</option>
           <option value="ورشة التصنيع">ورشة التصنيع</option>
@@ -401,15 +386,6 @@ textarea{resize:vertical}
 
         <label> الدرجة</label>
         <input id="s_score" type="text" inputmode="numeric" placeholder="مثال: 08" />
-
-        <label> اسم الرول </label>
-        <select id="s_roleName">
-          <option value="العمليات">العمليات</option>
-          <option value="خدمات الطرق">خدمات الطرق</option>
-          <option value="ورشة التصنيع">ورشة التصنيع</option>
-          <option value="ورشة التزويد">ورشة التزويد</option>
-          <option value="الدليل الشامل">الدليل الشامل</option>
-        </select>
 
         <div class="button-row">
           <button class="btn" type="button" onclick="genSpecial()">إنشاء التقرير</button>
@@ -517,29 +493,25 @@ textarea{resize:vertical}
   const coursesGroupBtn = document.getElementById("coursesGroupBtn");
   const coursesSubmenu = document.getElementById("coursesSubmenu");
 
-  // افتراضي: مقفول
   coursesGroupBtn.classList.remove("open");
   coursesSubmenu.classList.remove("open");
 
   coursesGroupBtn.addEventListener("click", ()=>{
     const isOpen = coursesSubmenu.classList.contains("open");
-    if(isOpen){
-      coursesSubmenu.classList.remove("open");
-      coursesGroupBtn.classList.remove("open");
-    }else{
-      coursesSubmenu.classList.add("open");
-      coursesGroupBtn.classList.add("open");
-    }
+    coursesSubmenu.classList.toggle("open", !isOpen);
+    coursesGroupBtn.classList.toggle("open", !isOpen);
   });
 
   // =========================
-  // Tabs (تشتغل على أزرار submenu فقط)
+  // Tabs
   // =========================
   document.querySelectorAll("[data-target]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const target = btn.getAttribute("data-target");
       document.querySelectorAll(".container").forEach(c=>c.classList.remove("active"));
       document.getElementById(target).classList.add("active");
+      // تحديث تلقائي عند فتح أي تاب
+      syncRoleRequestCourse();
     });
   });
 
@@ -552,38 +524,30 @@ textarea{resize:vertical}
 
   courseType.addEventListener("change", ()=>{
     const v = courseType.value;
-    if(v === "basic"){
-      basicWrap.style.display = "block";
-      specialWrap.style.display = "none";
-    }else{
-      basicWrap.style.display = "none";
-      specialWrap.style.display = "block";
-    }
+    basicWrap.style.display   = (v === "basic") ? "block" : "none";
+    specialWrap.style.display = (v === "special") ? "block" : "none";
+
     const out = document.getElementById("outBox");
     out.style.display = "none";
     out.textContent = "";
 
-    // مهم: تحديث اسم الدورة في طلب الرول
     syncRoleRequestCourse();
   });
 
   // =========================
-  // Sync "طلب رول الدورات" مع "اختر اسم الدورة" تلقائياً
+  // Sync طلب رول الدورات مع اسم الدورة
   // =========================
   function getSelectedCourseName(){
     const t = document.getElementById("courseType")?.value || "basic";
-    if(t === "basic"){
-      return document.getElementById("b_courseName")?.value || "";
-    }else{
-      return document.getElementById("s_courseName")?.value || "";
-    }
+    return (t === "basic")
+      ? (document.getElementById("b_courseName")?.value || "")
+      : (document.getElementById("s_courseName")?.value || "");
   }
 
   function syncRoleRequestCourse(){
     const rrRoleAuto = document.getElementById("rr_roleAuto");
     if(!rrRoleAuto) return;
-    const name = getSelectedCourseName();
-    rrRoleAuto.value = name || "لا يوجد";
+    rrRoleAuto.value = getSelectedCourseName() || "لا يوجد";
   }
 
   document.getElementById("b_courseName").addEventListener("change", syncRoleRequestCourse);
@@ -646,7 +610,7 @@ textarea{resize:vertical}
   // =========================
   // Input restrictions
   // =========================
-  ["b_serial","b_courseNo","b_explainer","b_checker","s_serial","s_tech","s_trainer","s_score"].forEach(id=>{
+  ["b_serial","b_courseNo","b_explainer","b_checker","s_serial","s_tech","s_trainer","s_score","rr_tech"].forEach(id=>{
     const el = document.getElementById(id);
     el.addEventListener("input", ()=>onlyDigits(el));
   });
@@ -664,16 +628,14 @@ textarea{resize:vertical}
   // Generator: Basic
   // =========================
   function genBasic(){
-    const courseName = document.getElementById("b_courseName").value || "اسم الدورة هنا";
-    const serial = (document.getElementById("b_serial").value || "00").replace(/\D+/g,"") || "00";
-    const courseNo = (document.getElementById("b_courseNo").value || "").replace(/\D+/g,"");
-    const explainerId = (document.getElementById("b_explainer").value || "").replace(/\D+/g,"");
-    const checkerId = (document.getElementById("b_checker").value || "").replace(/\D+/g,"");
+    const courseName = document.getElementById("b_courseName").value || "لا يوجد";
+    const serial = (document.getElementById("b_serial").value || "").replace(/\D+/g,"") || "لا يوجد";
+    const courseNo = (document.getElementById("b_courseNo").value || "").replace(/\D+/g,"") || "";
+    const explainerId = (document.getElementById("b_explainer").value || "").replace(/\D+/g,"") || "";
+    const checkerId = (document.getElementById("b_checker").value || "").replace(/\D+/g,"") || "";
 
     const activeIds = parseIdsFromSpaces(document.getElementById("b_active").value, 4);
     const otherIds  = parseIdsFromSpaces(document.getElementById("b_others").value, 4);
-
-    const roleName = document.getElementById("b_roleName").value || "اسم الرول";
 
     const resultsLinkRaw = (document.getElementById("b_resultsLink").value || "").trim();
     const resultsLink = resultsLinkRaw ? resultsLinkRaw : "لا يوجد";
@@ -682,13 +644,11 @@ textarea{resize:vertical}
     const explainerText = explainerId ? `<@${explainerId}>` : "لا يوجد";
     const checkerText = checkerId ? `<@${checkerId}>` : "لا يوجد";
 
-    const activeText = activeIds.length
-      ? `( ${listMentions(activeIds)} )`
-      : `( لا يوجد )`;
+    const activeText = activeIds.length ? `( ${listMentions(activeIds)} )` : `( لا يوجد )`;
+    const otherText  = otherIds.length  ? `( ${listMentions(otherIds)} )`  : `( لا يوجد )`;
 
-    const otherText = otherIds.length
-      ? `( ${listMentions(otherIds)} )`
-      : `( لا يوجد )`;
+    // ✅ الرول مربوط باسم الدورة مباشرة
+    const roleName = courseName || "لا يوجد";
 
     const out =
 `*** نموذج الأنتهاء من الدورة واعتماد النتائج وطلب تسليم رول ***
@@ -730,25 +690,25 @@ textarea{resize:vertical}
   // Generator: Special
   // =========================
   function genSpecial(){
-    const courseName = document.getElementById("s_courseName").value || "خدمات الطرق";
-    const serial = (document.getElementById("s_serial").value || "5").replace(/\D+/g,"") || "5";
-    const techId = (document.getElementById("s_tech").value || "").replace(/\D+/g,"");
-    const trainerId = (document.getElementById("s_trainer").value || "").replace(/\D+/g,"");
-    const score = (document.getElementById("s_score").value || "00").replace(/\D+/g,"") || "00";
-    const roleName = document.getElementById("s_roleName").value || "اسم الرول";
+    const courseName = document.getElementById("s_courseName").value || "لا يوجد";
+    const serial = (document.getElementById("s_serial").value || "").replace(/\D+/g,"") || "لا يوجد";
+    const techId = (document.getElementById("s_tech").value || "").replace(/\D+/g,"") || "";
+    const trainerId = (document.getElementById("s_trainer").value || "").replace(/\D+/g,"") || "";
+    const score = (document.getElementById("s_score").value || "").replace(/\D+/g,"") || "";
 
-    const techText = techId ? `<@${techId}>` : `<@منشن>`;
-    const trainerText = trainerId ? `<@${trainerId}>` : `<@مدرب>`;
-    const scoreText = `${score}|10`;
+    const techText = techId ? `<@${techId}>` : "لا يوجد";
+    const trainerText = trainerId ? `<@${trainerId}>` : "لا يوجد";
+    const scoreText = score ? `${score}|10` : "لا يوجد";
+
+    // ✅ الرول مربوط باسم الدورة مباشرة
+    const roleName = courseName || "لا يوجد";
 
     const out =
 `*** نموذج الأنتهاء من الدورة الاستثنائية ***
 
-
 \`- تم تعبية جداول رسوم الدورات في مجلد الدورة الاستثنائية في دورة (${courseName}) رقم التسلسل ( ${serial} ) قبل ارسال هاذا التقرير :\`
 
-
-*** \` اسم الدورة :\` ( تضع اسم الدورة )***
+*** \` اسم الدورة :\` ( ${courseName} )***
 
 *** \` تم إقامه الدورة للفني : \` *** ( ${techText} ) 
 
@@ -773,9 +733,7 @@ textarea{resize:vertical}
     const url = courseLinksSelect.value;
     if(url){
       goCourseBtn.style.display = "inline-block";
-      goCourseBtn.onclick = ()=>{
-        window.open(url, "_blank", "noopener,noreferrer");
-      };
+      goCourseBtn.onclick = ()=> window.open(url, "_blank", "noopener,noreferrer");
     }else{
       goCourseBtn.style.display = "none";
       goCourseBtn.onclick = null;
@@ -785,9 +743,6 @@ textarea{resize:vertical}
   // =========================
   // Tab طلب رول الدورات
   // =========================
-  const rrTech = document.getElementById("rr_tech");
-  rrTech.addEventListener("input", ()=>onlyDigits(rrTech));
-
   function genRoleRequest(){
     const techId = (document.getElementById("rr_tech").value || "").replace(/\D+/g,"");
     const role = getSelectedCourseName() || "لا يوجد";
@@ -816,10 +771,22 @@ textarea{resize:vertical}
     box.scrollIntoView({behavior:"smooth", block:"start"});
   }
 
-  // default
-  courseType.value = "basic";
-  courseType.dispatchEvent(new Event("change"));
-  syncRoleRequestCourse();
+  // =========================
+  // default (منع المتصفح يحفظ اختيار قديم)
+  // =========================
+  window.addEventListener("load", ()=>{
+    // أجبر الأساسية على العمليات عند أول تحميل
+    const b = document.getElementById("b_courseName");
+    if(b) b.value = "العمليات";
+
+    // الاستثنائية خليها على خدمات الطرق (كما عندك) - تقدر تغيرها لو تبي
+    const s = document.getElementById("s_courseName");
+    if(s && !s.value) s.value = "خدمات الطرق";
+
+    courseType.value = "basic";
+    courseType.dispatchEvent(new Event("change"));
+    syncRoleRequestCourse();
+  });
 
   // expose
   window.genBasic = genBasic;
