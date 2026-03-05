@@ -424,8 +424,15 @@ textarea{resize:vertical}
       <label>منشن للفني</label>
       <input id="rr_tech" type="text" inputmode="numeric" placeholder="ضع الكوبي يوزر ايدي" />
 
-      <label>اسم الدورة (تلقائي)</label>
-      <input id="rr_roleAuto" type="text" readonly value="—" />
+<label>اسم الدورة</label>
+<select id="rr_roleAuto">
+  <option value="">— اختر —</option>
+  <option>الدليل الشامل</option>
+  <option>ورشة التزويد</option>
+  <option>ورشة التصنيع</option>
+  <option>خدمات الطرق</option>
+  <option>العمليات</option>
+</select>
 
       <label>رابط الدورة</label>
       <input id="rr_link" type="text" placeholder="مثال: https://..." />
@@ -544,11 +551,15 @@ textarea{resize:vertical}
       : (document.getElementById("s_courseName")?.value || "");
   }
 
-  function syncRoleRequestCourse(){
-    const rrRoleAuto = document.getElementById("rr_roleAuto");
-    if(!rrRoleAuto) return;
-    rrRoleAuto.value = getSelectedCourseName() || "لا يوجد";
+function syncRoleRequestCourse(){
+  const rrRoleAuto = document.getElementById("rr_roleAuto");
+  if(!rrRoleAuto) return;
+
+  const autoName = getSelectedCourseName();
+  if(autoName && rrRoleAuto.value === ""){
+    rrRoleAuto.value = autoName;
   }
+}
 
   document.getElementById("b_courseName").addEventListener("change", syncRoleRequestCourse);
   document.getElementById("s_courseName").addEventListener("change", syncRoleRequestCourse);
